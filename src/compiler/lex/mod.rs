@@ -8,7 +8,7 @@ use ::FilePath;
 use compiler::event_driven_module::engine::{Engine, EngineQueue, Event};
 use compiler::event_driven_module::actions::{Actions, FileActions};
 
-use self::file_engine::{FileEngine, FileEventData};
+use self::file_engine::FileEngine;
 
 pub mod file_engine;
 
@@ -22,7 +22,6 @@ impl Lexer {
     return Lexer{ file_engine };
   }
   pub fn run(&self, file_path: String) -> () {
-    self.file_engine.push_event(FileActions::Open, FileEventData::FilePath(file_path));
   }
 }
 

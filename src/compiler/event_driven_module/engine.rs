@@ -1,23 +1,16 @@
 use std::collections::BinaryHeap;
 use std::cmp::{Ord, Ordering};
 use std::any::Any;
-use super::actions::Actions;
-use super::events::DataTypes;
+use std::boxed::Box;
 
 type CodeLine = String;
-pub type EngineQueue<D = DataTypes> = BinaryHeap<Event<D>>;
+pub type EngineQueue = BinaryHeap<Event>;
 
-#[derive(PartialEq, Eq, Debug)]
-pub struct Event<Data = DataTypes> {
+#[derive(Debug)]
+pub struct Event {
   pub priority: usize,
-  pub action: Actions,
-  pub data: Data,
-}
-
-impl Ord for Event {
-  fn cmp (&self, other: &Event) -> Ordering {
-    return self.priority.cmp(&other.priority);
-  }
+  pub action: Box<Any>,
+  pub data: Box<Any>,
 }
 
 impl PartialOrd for Event {
@@ -26,7 +19,27 @@ impl PartialOrd for Event {
   }
 }
 
+impl Ord for Event {
+  fn cmp (&self, other: &Event) -> Ordering {
+    return self.priority.cmp(&other.priority);
+  }
+}
 
-pub trait Engine<Input> {
+// Events are always different 
+impl PartialEq for Event {
+  fn eq(&self, other: &Event) -> bool {
+    false
+  }
+}
+
+impl Eq for Event {}
+
+
+pub trait Engine {
+  fn run(&self, mut queue: EngineQueue) -> () {
+    while let Some(x) = queue.pop() {
+      self.consume(x)
+    }
+  }
   fn consume(&self, event: Event) -> ();
 }
