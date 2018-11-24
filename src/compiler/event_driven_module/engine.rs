@@ -38,8 +38,8 @@ impl Eq for Event {}
 pub trait Engine {
   fn run(&self, mut queue: EngineQueue) -> () {
     while let Some(x) = queue.pop() {
-      self.consume(x)
+      self.consume(x);
     }
   }
-  fn consume(&self, event: Event) -> ();
+  fn consume(&self, event: Event) -> Result<(), String>;
 }

@@ -1,0 +1,6 @@
+[package]
+name = "wallachia"
+version = "0.1.0-ALPHA"
+authors = ["Gustavo Torres <gustavo.torresme@gmail.com>"]
+
+[dependencies]
