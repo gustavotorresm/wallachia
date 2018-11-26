@@ -15,7 +15,7 @@ fn create_compiler() -> Compiler {
 
 pub fn compile(file_path: String) -> Result<(), String>{
   println!("Compiling...");
-  let compiler = create_compiler();
+  let mut compiler = create_compiler();
 
   compiler.lexer.run(file_path);
   return Ok(());

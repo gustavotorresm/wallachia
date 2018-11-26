@@ -27,16 +27,17 @@ impl Lexer {
   }
 
   pub fn new() -> Lexer {
-    let file_engine = FileEngine::new();
+    let mut file_engine = FileEngine::new();
     return Lexer{ file_engine };
   }
 
-  pub fn run(&self, file_path: String) -> () {
+  pub fn run(&mut self, file_path: String) -> () {
     let mut queue = EngineQueue::from(vec![Lexer::initial_event(file_path)]);
 
     while let Some(event) = queue.pop() {
       if let Some(_) = event.action.downcast_ref::<FileActions>() {
-        self.file_engine.consume(event);
+        let output = &mut self.file_engine.consume(event);
+        queue.append(output);
       }
     }
   }
