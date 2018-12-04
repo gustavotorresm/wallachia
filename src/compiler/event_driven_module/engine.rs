@@ -36,11 +36,14 @@ impl Eq for Event {}
 
 
 pub trait Engine {
-  fn run(&mut self, mut queue: EngineQueue) -> () {
+  fn run(&mut self, mut queue: EngineQueue, output_queue: &mut EngineQueue, time: usize) -> () {
     while let Some(x) = queue.pop() {
-      self.consume(x);
+      self.consume(x, output_queue, time);
     }
   }
 
-  fn consume(&mut self, event: Event) -> EngineQueue;
+  fn consume(&mut self,
+             event: Event,
+             output_queue: &mut EngineQueue,
+             time:usize) -> Option<EngineQueue>;
 }

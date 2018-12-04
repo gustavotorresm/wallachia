@@ -1,6 +1,7 @@
 use std::string::String;
 
 pub mod event_driven_module;
+pub mod actions;
 pub mod lex;
 
 struct Compiler {
