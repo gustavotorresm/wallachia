@@ -4,17 +4,10 @@ use std::boxed::Box;
 use std::any::Any;
 
 use compiler::event_driven_module::engine::*;
-use compiler::event_driven_module::actions::FileActions;
+use compiler::lex::actions::FileActions;
+use compiler::lex::events::{file_open_event, file_read_event, word_line_event};
 
 pub struct FileEngine;
-
-fn read_event(mut file: File, instant: usize) -> Event {
-  return Event {
-    priority: instant,
-    action: Box::new(FileActions::Read),
-    data: Box::new(file),
-  }
-}
 
 impl FileEngine {
   pub fn new() -> FileEngine {
@@ -24,7 +17,7 @@ impl FileEngine {
   fn open_file(&self, path: String, output: &mut EngineQueue, time: usize) -> () {
     let mut file = File::open(&path);
     match file {
-      Ok(file) => output.push(read_event(file, time)),
+      Ok(file) => output.push(file_read_event(file, time)),
       Err(e) => panic!("Could not open file {}: {}", path, e),
     }
   }
@@ -33,7 +26,10 @@ impl FileEngine {
     let file = BufReader::new(file);
 
     for (i, line) in file.lines().enumerate() {
-      output.push()
+      match line {
+        Ok(line) => output.push(word_line_event(line, i + 1, time)),
+        Err(error) => panic!("Error while reading line {}: {}", i, error),
+      }
     }
   }
 
@@ -54,13 +50,12 @@ impl Engine for FileEngine {
   fn consume(&mut self,
              event: Event,
              output_queue: &mut EngineQueue,
-             time: usize) -> Option<EngineQueue> {
+             time: usize) {
     match event.action.downcast::<FileActions>() {
-      Err(event) => panic!("Wrong event consumed by FileEngine: {:?}", event),
+      Err(error) => panic!("Wrong event consumed by FileEngine: {:?}", error),
       Ok(action) => {
         self.handle_action(*action, event.data, output_queue, time);
       },
     }
-    return None;
   }
 }

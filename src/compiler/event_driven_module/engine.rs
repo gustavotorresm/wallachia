@@ -45,5 +45,5 @@ pub trait Engine {
   fn consume(&mut self,
              event: Event,
              output_queue: &mut EngineQueue,
-             time:usize) -> Option<EngineQueue>;
+             time:usize) -> ();
 }

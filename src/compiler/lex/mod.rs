@@ -10,8 +10,6 @@ use compiler::event_driven_module::engine::{Engine, EngineQueue, Event};
 
 use self::file_engine::FileEngine;
 use self::word_engine::WordEngine;
-use self::events;
-use self::actions;
 
 pub mod file_engine;
 pub mod word_engine;
@@ -20,13 +18,14 @@ pub mod events;
 
 pub struct Lexer {
   file_engine: FileEngine,
+  word_engine: WordEngine,
 }
 
 impl Lexer {
   pub fn new() -> Lexer {
     let mut file_engine = FileEngine::new();
     let mut word_engine = WordEngine::new();
-    return Lexer{ file_engine };
+    return Lexer{ file_engine, word_engine };
   }
 
   pub fn run(&mut self, file_path: String) -> () {
@@ -34,8 +33,10 @@ impl Lexer {
 
     while let Some(event) = queue.pop() {
       let time = event.priority;
-      if let Some(_) = event.action.downcast_ref::<actions::FileActions>() {
+      if event.action.is::<actions::FileActions>() {
         &mut self.file_engine.consume(event, &mut queue, time);
+      } else if event.action.is::<actions::WordActions>() {
+        &mut self.word_engine.consume(event, &mut queue, time);
       }
     }
   }

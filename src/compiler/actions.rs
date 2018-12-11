@@ -1,4 +1,4 @@
 #[derive(Debug, PartialEq, Eq)]
 pub enum Actions {
-  LexAction(lex::action::Actions),
+  LexAction(super::lex::actions::Actions),
 }
