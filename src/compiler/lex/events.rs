@@ -29,7 +29,7 @@ pub fn file_read_event(mut file: File, instant: usize) -> Event {
 pub fn word_line_event(line: String, line_number: usize, instant: usize) -> Event {
     return Event {
         priority: instant,
-        action: Box::new(WordActions::SplitLine),
+        action: Box::new(TokenActions::SplitLine),
         data: Box::new((instant + line_number, line)),
     }
 }

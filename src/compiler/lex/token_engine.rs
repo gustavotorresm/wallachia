@@ -6,48 +6,56 @@ use regex::Regex;
 use lazy_static::*;
 
 use compiler::event_driven_module::engine::*;
-use super::actions::WordActions;
+use super::actions::TokenActions;
 
-pub struct WordEngine;
+pub enum Number {
+  Integer(isize),
+  Float(f32),
+}
+
+pub enum Token {
+  Number(Number),
+}
+
+pub struct TokenEngine;
 
 type SplitLineData = (usize, String);
 
-impl WordEngine {
-  pub fn new() -> WordEngine {
-    return WordEngine{};
+impl TokenEngine {
+  pub fn new() -> TokenEngine {
+    return TokenEngine{};
   }
 
   fn split_line(&self, data: SplitLineData, output: &mut EngineQueue, time: usize) -> () {
     lazy_static! {
-      static ref RE: Regex = Regex::new(r#"(".*"|[^\s]*)"#).unwrap();//r#"^(".*?"|[^\s]*)$"#).unwrap();
+      static ref RE: Regex = Regex::new(r#"(".*"|[^\s]*)"#).unwrap();
     }
     let (num, line) = data;
-    println!("{}: {}", num, line);
 
     for cap in RE.captures_iter(&line) {
-      println!("{}", &cap[1]);
+
     }
   }
 
   fn handle_action(&mut self,
-                   action: WordActions,
+                   action: TokenActions,
                    data: Box<Any>,
                    output: &mut EngineQueue,
                    time: usize) -> () {
     match action {
-      WordActions::SplitLine => self.split_line(*data.downcast::<SplitLineData>().unwrap(), output, time),
+      TokenActions::SplitLine => self.split_line(*data.downcast::<SplitLineData>().unwrap(), output, time),
       _ => panic!("Not yet implemented"),
     }
   }
 }
 
-impl Engine for WordEngine {
+impl Engine for TokenEngine {
   fn consume(&mut self,
              event: Event,
              output_queue: &mut EngineQueue,
              time: usize) {
-    match event.action.downcast::<WordActions>() {
-      Err(error) => panic!("Wrong event consumed by WordEngine: {:?}", error),
+    match event.action.downcast::<TokenActions>() {
+      Err(error) => panic!("Wrong event consumed by TokenEngine: {:?}", error),
       Ok(action) => {
         self.handle_action(*action, event.data, output_queue, time);
       },

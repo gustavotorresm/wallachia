@@ -1,7 +1,7 @@
 #[derive(Debug, PartialEq, Eq)]
 pub enum Actions {
   FileAction(FileActions),
-  WordAction(WordActions),
+  TokenAction(TokenActions),
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -12,6 +12,6 @@ pub enum FileActions {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum WordActions {
+pub enum TokenActions {
   SplitLine,
 }

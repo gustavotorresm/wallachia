@@ -9,22 +9,22 @@ use ::FilePath;
 use compiler::event_driven_module::engine::{Engine, EngineQueue, Event};
 
 use self::file_engine::FileEngine;
-use self::word_engine::WordEngine;
+use self::token_engine::TokenEngine;
 
 pub mod file_engine;
-pub mod word_engine;
+pub mod token_engine;
 pub mod actions;
 pub mod events;
 
 pub struct Lexer {
   file_engine: FileEngine,
-  word_engine: WordEngine,
+  word_engine: TokenEngine,
 }
 
 impl Lexer {
   pub fn new() -> Lexer {
     let mut file_engine = FileEngine::new();
-    let mut word_engine = WordEngine::new();
+    let mut word_engine = TokenEngine::new();
     return Lexer{ file_engine, word_engine };
   }
 
@@ -35,7 +35,7 @@ impl Lexer {
       let time = event.priority;
       if event.action.is::<actions::FileActions>() {
         &mut self.file_engine.consume(event, &mut queue, time);
-      } else if event.action.is::<actions::WordActions>() {
+      } else if event.action.is::<actions::TokenActions>() {
         &mut self.word_engine.consume(event, &mut queue, time);
       }
     }
