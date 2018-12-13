@@ -41,7 +41,24 @@ impl TokenEngine {
   }
 
   fn classify(&self, data: String, output: &mut EngineQueue, time: usize) -> () {
-    println!("{} - {}", time, data);
+    lazy_static! {
+      static ref INT: Regex = Regex::new(r"^[+-]?\d+$").unwrap();
+      static ref FLOAT: Regex = Regex::new(r"^[+-]?(\d+|\d+\.\d*|\d*\.\d+)(E[+-]\d+)?$").unwrap();
+      static ref STRING: Regex = Regex::new(r#"^"(.*)"$"#).unwrap();
+      static ref WORD: Regex = Regex::new(r"^\w*$").unwrap();
+    }
+
+    if INT.is_match(&data) {
+      println!("{} is an integer", data);
+    } else if FLOAT.is_match(&data) {
+      println!("{} is a float", data);
+    } else if STRING.is_match(&data) {
+      println!("{} is a string", &data);
+    } else if WORD.is_match(&data) {
+      println!("{} is a word", data);
+    } else {
+      println!("No match for {}", data);
+    }
   }
 
   fn handle_action(&mut self,
