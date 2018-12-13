@@ -34,3 +34,10 @@ pub fn word_line_event(line: String, line_number: usize, instant: usize) -> Even
     }
 }
 
+pub fn tokenize_event(word: String, instant: usize) -> Event {
+  return Event {
+    priority: instant,
+    action: Box::new(TokenActions::ClassifyToken),
+    data: Box::new(word),
+  }
+}

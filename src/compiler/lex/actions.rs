@@ -14,4 +14,5 @@ pub enum FileActions {
 #[derive(Debug, PartialEq, Eq)]
 pub enum TokenActions {
   SplitLine,
+  ClassifyToken,
 }

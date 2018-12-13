@@ -21,7 +21,7 @@ impl PartialOrd for Event {
 
 impl Ord for Event {
   fn cmp (&self, other: &Event) -> Ordering {
-    return self.priority.cmp(&other.priority);
+    return other.priority.cmp(&self.priority);
   }
 }
 
