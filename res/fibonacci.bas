@@ -1,5 +1,7 @@
+5  REM THIS IS A COMMENT 666 "It can have anything"
+7  END
 10 INPUT "How many numbers should i generate"; N
-20 PRINT "Generating "; N; " numbers..."
+20 PRINT "Generating ", NNN " numbers..."
 30 DIM R (N)
 40 FOR I = 0 TO N
 50 IF I <= 1 THEN 100

@@ -15,6 +15,7 @@ pub mod file_engine;
 pub mod token_engine;
 pub mod actions;
 pub mod events;
+pub mod tokens;
 
 pub struct Lexer {
   file_engine: FileEngine,
@@ -28,8 +29,9 @@ impl Lexer {
     return Lexer{ file_engine, word_engine };
   }
 
-  pub fn run(&mut self, file_path: String) -> () {
+  pub fn run(&mut self, file_path: String) -> EngineQueue {
     let mut queue = EngineQueue::from(vec![events::initial_event(file_path)]);
+    let mut output = EngineQueue::new();
 
     while let Some(event) = queue.pop() {
       let time = event.priority;
@@ -37,31 +39,11 @@ impl Lexer {
         &mut self.file_engine.consume(event, &mut queue, time);
       } else if event.action.is::<actions::TokenActions>() {
         &mut self.word_engine.consume(event, &mut queue, time);
+      } else {
+        output.push(event);
       }
     }
+
+    return output;
   }
 }
-
-/*
-pub fn tokenize(file_path: FilePath) {
-  let mut queue = EngineQueue::new();
-
-  println!("{:?}", queue.peek());
-
-  queue.push(Actions::FileAction(FileActions::Open));
-  queue.push(Actions::FileAction(FileActions::Close));
-
-  println!("{:?}", queue);
-  println!("{:?}", queue.peek());
-
-  let f = File::open("res/test.bas").expect("Deu ruim no servidor!");
-  let f = BufReader::new(f);
-
-  for (n,line) in f.lines().enumerate() {
-    match line {
-      Ok(line) => println!("{}: {}", n, line),
-      _ => panic!("Deu ruim de novo"),
-    }
-  }
-}
-*/
