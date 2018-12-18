@@ -111,6 +111,40 @@ impl StatementParser {
   }
 }
 
+impl ExpParser {
+  fn consume(&mut self, token: Token) -> Option<Parsers> {
+    println!("Root {:?}, {:?}", self.state, token);
+    match self.state {
+      ExpParser::S0 => {
+        if let Token::Number(Number::Integer(x)) = token {
+          self.state = ExpParser::S1;
+          stack.pop(numer);
+        } else {
+          panic!("Unexpected token {:?}", token);
+        }
+      },
+      ExpParser::S1 => {
+        if let Token::Symbol(Symbol::Symbol(x)) = token {
+          self.state = ExpParser::S2
+            if (ops.peek().precedence < x.precedence) {
+              apply(ops.pop(), stack.pop(), stack().pop())
+            }
+
+          ops.push(x)
+        }
+      },
+      GrammarParserStates::S2 => {
+        if let Token::Control(Control::Newline) = token {
+          self.state = GrammarParserStates::S0;
+        } else {
+          panic!("Unexpected token {:?}. Expected new line.", token);
+        }
+      },
+    }
+    return None;
+  }
+}
+
 #[derive(Clone)]
 pub struct Parser {
   root_parser: GrammarParser,
